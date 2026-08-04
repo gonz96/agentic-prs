@@ -17,28 +17,59 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: rossjrw/pr-preview-action@v1.8.1
-        id: preview
-        with:
-          source-dir: ./
 
-      # Además del comentario que pr-preview-action deja en el PR, avisamos
-      # también en la issue original (la que decía "Fixes #N") para no tener
-      # que entrar al PR solo para coger el link del preview.
-      - name: Comentar el link del preview en la issue original
+      # Aviso temprano en la issue original: todavía no hay nada que enseñar,
+      # solo decimos que el despliegue ha arrancado. Guardamos el id de este
+      # comentario para editarlo luego en vez de dejar dos mensajes sueltos.
+      - name: Avisar que el preview se está desplegando
         if: github.event.action != 'closed'
+        id: pending-comment
         uses: actions/github-script@v9
         with:
           script: |
             const body = context.payload.pull_request.body || "";
             const re = /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#(\d+)/gi;
             const issues = [...new Set([...body.matchAll(re)].map(m => Number(m[1])))];
-            const previewUrl = "${{ steps.preview.outputs.preview-url }}";
+            const prNumber = context.payload.pull_request.number;
+            const prUrl = context.payload.pull_request.html_url;
+            const comments = [];
             for (const issue of issues) {
-              await github.rest.issues.createComment({
+              const { data } = await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue,
-                body: `🔗 Preview de [PR #${context.payload.pull_request.number}](${context.payload.pull_request.html_url}): ${previewUrl}`,
+                body: `🚧 Desplegando el preview de [PR #${prNumber}](${prUrl}) en el entorno de pruebas... dame un minuto.`,
+              });
+              comments.push({ issue, commentId: data.id });
+            }
+            core.setOutput("comments", JSON.stringify(comments));
+
+      - uses: rossjrw/pr-preview-action@v1.8.1
+        id: preview
+        with:
+          source-dir: ./
+          # Espera a que la CDN de GitHub Pages confirme que ya sirve el
+          # contenido antes de dar el paso por terminado, para no anunciar
+          # un link que todavía da "not found".
+          wait-for-pages-deployment: "true"
+
+      # Con el sitio ya confirmado como servido, editamos el aviso anterior
+      # para que pase de "desplegando" a "listo" con el link real.
+      - name: Actualizar el comentario con el link del preview
+        if: github.event.action != 'closed'
+        uses: actions/github-script@v9
+        env:
+          PREVIEW_URL: ${{ steps.preview.outputs.preview-url }}
+          COMMENTS_JSON: ${{ steps.pending-comment.outputs.comments }}
+        with:
+          script: |
+            const comments = JSON.parse(process.env.COMMENTS_JSON || "[]");
+            const previewUrl = process.env.PREVIEW_URL;
+            for (const { commentId } of comments) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: commentId,
+                body: `✅ Preview desplegado: ${previewUrl}`,
               });
             }
