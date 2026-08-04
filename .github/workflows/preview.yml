@@ -7,6 +7,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 concurrency:
   group: pr-preview-${{ github.event.number }}
@@ -17,5 +18,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: rossjrw/pr-preview-action@v1.8.1
+        id: preview
         with:
           source-dir: ./
+
+      # Además del comentario que pr-preview-action deja en el PR, avisamos
+      # también en la issue original (la que decía "Fixes #N") para no tener
+      # que entrar al PR solo para coger el link del preview.
+      - name: Comentar el link del preview en la issue original
+        if: github.event.action != 'closed'
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const body = context.payload.pull_request.body || "";
+            const re = /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#(\d+)/gi;
+            const issues = [...new Set([...body.matchAll(re)].map(m => Number(m[1])))];
+            const previewUrl = "${{ steps.preview.outputs.preview-url }}";
+            for (const issue of issues) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue,
+                body: `🔗 Preview de [PR #${context.payload.pull_request.number}](${context.payload.pull_request.html_url}): ${previewUrl}`,
+              });
+            }
