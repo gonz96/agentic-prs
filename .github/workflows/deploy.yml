@@ -1,0 +1,24 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: JamesIves/github-pages-deploy-action@v4.8.0
+        with:
+          branch: gh-pages
+          folder: .
+          # No se toca pr-preview/ al desplegar producción: ahí viven los previews activos.
+          clean-exclude: pr-preview/
