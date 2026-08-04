@@ -45,6 +45,15 @@
     ul { margin: 0; padding-left: 1.2rem; }
     li { margin: .2rem 0; }
     footer { margin-top: 2rem; color: var(--muted); font-size: .85rem; }
+    #dog-wrap { display: flex; flex-direction: column; align-items: center; }
+    #dog { width: 160px; height: 160px; }
+    #dog.jump { animation: dog-jump .5s ease; }
+    @keyframes dog-jump {
+      0%   { transform: translateY(0); }
+      40%  { transform: translateY(-40px); }
+      60%  { transform: translateY(-40px); }
+      100% { transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -57,6 +66,26 @@
       <h2>Contador</h2>
       <button id="inc">Púlsame</button>
       <span id="count">0</span>
+    </section>
+
+    <section>
+      <h2>Perro</h2>
+      <div id="dog-wrap">
+        <svg id="dog" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Perro">
+          <ellipse cx="100" cy="150" rx="10" ry="6" fill="#00000022"/>
+          <rect x="50" y="120" width="14" height="30" rx="6" fill="#c98a4b"/>
+          <rect x="130" y="120" width="14" height="30" rx="6" fill="#c98a4b"/>
+          <ellipse cx="100" cy="110" rx="55" ry="35" fill="#e0a25e"/>
+          <path d="M40 100 Q15 90 25 70 Q45 75 55 95 Z" fill="#e0a25e"/>
+          <circle cx="150" cy="90" r="32" fill="#e0a25e"/>
+          <path d="M128 65 Q118 40 135 45 Q140 62 138 70 Z" fill="#c98a4b"/>
+          <path d="M172 65 Q182 40 165 45 Q160 62 162 70 Z" fill="#c98a4b"/>
+          <circle cx="140" cy="88" r="4" fill="#2b2b2b"/>
+          <circle cx="160" cy="88" r="4" fill="#2b2b2b"/>
+          <ellipse cx="150" cy="102" rx="8" ry="6" fill="#2b2b2b"/>
+        </svg>
+        <button id="jump">Saltar</button>
+      </div>
     </section>
 
     <section>
@@ -76,6 +105,16 @@
     document.getElementById('inc').addEventListener('click', function () {
       count += 1;
       out.textContent = count;
+    });
+
+    var dog = document.getElementById('dog');
+    document.getElementById('jump').addEventListener('click', function () {
+      dog.classList.remove('jump');
+      void dog.offsetWidth; // reinicia la animación si se pulsa varias veces seguidas
+      dog.classList.add('jump');
+    });
+    dog.addEventListener('animationend', function () {
+      dog.classList.remove('jump');
     });
   </script>
 </body>
