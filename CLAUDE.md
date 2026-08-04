@@ -1,6 +1,10 @@
 # agentic-prs
 
-Sitio estático de una sola página (`index.html`, HTML/CSS/JS plano, sin build ni framework).
+Sitio estático de una sola página (`index.html`, HTML/CSS/JS plano, sin build ni framework),
+desplegado en GitHub Pages desde `main` → https://gonz96.github.io/agentic-prs/
+
+Cualquier cambio que se mergee a `main` sale a producción automáticamente. Ténlo en cuenta:
+no dejes contenido de prueba ni comentarios de depuración en `index.html`.
 
 Al arreglar una issue:
 - Mantén los cambios mínimos e inline en `index.html` — no introduzcas un sistema de build
