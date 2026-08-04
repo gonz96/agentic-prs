@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>agentic-prs — campo de pruebas</title>
+  <style>
+    :root {
+      --bg: #fbfaf9;
+      --fg: #1f1e1d;
+      --muted: #6b6866;
+      --line: #e3e0dc;
+      --accent: #c15f3c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 3rem 1.5rem;
+      font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    main { max-width: 34rem; margin: 0 auto; }
+    h1 { font-size: 3rem; margin: 0 0 .25rem; }
+    p.lead { color: var(--muted); margin: 0 0 2rem; }
+    section {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      background: #fff;
+    }
+    h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em;
+         color: var(--muted); margin: 0 0 .75rem; }
+    button {
+      font: inherit;
+      padding: .5rem 1rem;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+    }
+    #count { font-variant-numeric: tabular-nums; margin-left: .75rem; color: var(--muted); }
+    ul { margin: 0; padding-left: 1.2rem; }
+    li { margin: .2rem 0; }
+    footer { margin-top: 2rem; color: var(--muted); font-size: .85rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Gonzalo</h1>
+    <p class="lead">Página estática de pruebas. Abre una issue mencionando
+      <code>@claude</code> y deja que la modifique.</p>
+
+    <section>
+      <h2>Contador</h2>
+      <button id="inc">Púlsame</button>
+      <span id="count">0</span>
+    </section>
+
+    <section>
+      <h2>Lista</h2>
+      <ul id="items">
+        <li>Primer elemento</li>
+        <li>Segundo elemento</li>
+      </ul>
+    </section>
+
+    <footer>Sin build, sin dependencias. Todo vive en este fichero.</footer>
+  </main>
+
+  <script>
+    var count = 0;
+    var out = document.getElementById('count');
+    document.getElementById('inc').addEventListener('click', function () {
+      count += 1;
+      out.textContent = count;
+    });
+  </script>
+</body>
+</html>
