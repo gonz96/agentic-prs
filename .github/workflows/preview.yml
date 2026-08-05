@@ -18,10 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Aviso temprano en la issue original: todavía no hay nada que enseñar,
-      # solo decimos que el despliegue ha arrancado. Guardamos el id de este
-      # comentario para editarlo luego en vez de dejar dos mensajes sueltos.
-      - name: Avisar que el preview se está desplegando
+      # Early notice on the originating issue. There is nothing to show yet — this only says
+      # the deployment started. The comment id is kept so the next step can edit it instead of
+      # leaving two separate messages behind.
+      - name: Announce that the preview is deploying
         if: github.event.action != 'closed'
         id: pending-comment
         uses: actions/github-script@v9
@@ -38,7 +38,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue,
-                body: `🚧 Desplegando el preview de [PR #${prNumber}](${prUrl}) en el entorno de pruebas... dame un minuto.`,
+                body: `🚧 Deploying the preview for [PR #${prNumber}](${prUrl})…`,
               });
               comments.push({ issue, commentId: data.id });
             }
@@ -48,14 +48,12 @@ jobs:
         id: preview
         with:
           source-dir: ./
-          # Espera a que la CDN de GitHub Pages confirme que ya sirve el
-          # contenido antes de dar el paso por terminado, para no anunciar
-          # un link que todavía da "not found".
+          # Wait until the GitHub Pages CDN actually serves the content before finishing, so we
+          # never announce a URL that still 404s.
           wait-for-pages-deployment: "true"
 
-      # Con el sitio ya confirmado como servido, editamos el aviso anterior
-      # para que pase de "desplegando" a "listo" con el link real.
-      - name: Actualizar el comentario con el link del preview
+      # The site is confirmed live, so turn the earlier notice into the finished one.
+      - name: Update the comment with the preview link
         if: github.event.action != 'closed'
         uses: actions/github-script@v9
         env:
@@ -70,6 +68,6 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: commentId,
-                body: `✅ Preview desplegado: ${previewUrl}`,
+                body: `✅ Preview deployed: ${previewUrl}`,
               });
             }

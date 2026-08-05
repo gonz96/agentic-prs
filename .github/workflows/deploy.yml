@@ -20,5 +20,5 @@ jobs:
         with:
           branch: gh-pages
           folder: .
-          # No se toca pr-preview/ al desplegar producción: ahí viven los previews activos.
+          # Leave pr-preview/ untouched: that is where the live PR previews are served from.
           clean-exclude: pr-preview/
