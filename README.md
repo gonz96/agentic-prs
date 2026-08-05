@@ -14,43 +14,38 @@ static page that serves as the codebase the agent operates on.
 
 ## Who does what
 
-Two people are involved, and neither of them leaves the tool they already work in. The Product
-Owner never opens GitHub; the developer never opens Jira. Everything between the two is
-automated.
+Only two steps are manual, marked 👤 below. Everything else happens on its own.
 
 ```mermaid
-flowchart TD
-    subgraph PO["👔 Product Owner — stays in Jira"]
-        A["Writes the ticket:<br/>summary, description,<br/>acceptance criteria"]
-        B["Drags the card into<br/><b>AI assigned</b>"]
+flowchart LR
+    subgraph JIRA["📋 JIRA"]
+        A["👤 🗂️ Move ticket to<br/><b>AI assigned</b>"]
     end
 
-    subgraph AUTO["🤖 Automated — nobody does anything"]
-        C["A GitHub issue appears<br/>carrying the ticket's content"]
-        D["The agent writes the code<br/>and opens a pull request"]
-        E["A preview of that PR<br/>goes live on its own URL"]
+    subgraph GH["🐙 GITHUB"]
+        B["🔀 PR opened with a<br/>live preview of the change"]
+        C{"👤 Review<br/>the preview"}
+        D["🚀 Merge<br/>→ production"]
     end
 
-    subgraph DEV["👩‍💻 Developer — stays in GitHub"]
-        F["Opens the issue and clicks<br/>the preview link posted there"]
-        G["Tries the change running for real,<br/>then reads the diff"]
-        H{"Is it right?"}
-        I["Comments <code>@claude ...</code><br/>saying what to change"]
-        J["Approves and merges"]
-    end
+    A --> B --> C
+    C -->|"approve"| D
+    C -->|"comment <b>@claude change...</b>"| B
 
-    K["🚀 Live in production"]
-
-    A --> B --> C --> D --> E --> F --> G --> H
-    H -->|"not yet"| I
-    I --> D
-    H -->|"yes"| J --> K
+    classDef manual fill:#deebff,stroke:#4c9aff,stroke-width:2px,color:#172b4d
+    classDef auto fill:#e3fcef,stroke:#57d9a3,color:#172b4d
+    class A,C manual
+    class B,D auto
 ```
 
-The Product Owner's only job is writing a ticket clear enough to act on and moving it one
-column. The developer's only job is judging the result — with the change already running at a
-URL, so review isn't reading code and imagining the outcome. Nothing in between requires a
-person, and the loop back to the agent is a plain comment rather than a handoff.
+**👤 Manual — the Product Owner** drags a card into `AI assigned` in Jira, and never opens
+GitHub.
+
+**👤 Manual — the developer** opens the preview URL, sees the change already running, and
+either approves it or replies `@claude change...` to send it back. They never open Jira.
+
+Everything else — reading the ticket, writing the code, opening the PR, deploying the
+preview, publishing to production — runs without anyone involved.
 
 ## How it works under the hood
 
