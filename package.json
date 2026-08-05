@@ -1,0 +1,14 @@
+{
+  "name": "agentic-prs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright test suite for the agentic-prs static site",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0",
+    "http-server": "^14.1.1"
+  }
+}
