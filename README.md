@@ -95,9 +95,9 @@ gets posted, and where a human replies `@claude do X instead` to iterate — all
 GitHub. It becomes the agent's session panel.
 
 **The agent never merges its own work.** `allowedTools` grants `gh pr create` but withholds
-`gh pr merge`, and the repository's [`CLAUDE.md`](CLAUDE.md) states the constraint explicitly.
-Every change passes through human review and a working preview URL before it can reach
-production.
+`gh pr merge`, and [`CLAUDE.md`](CLAUDE.md) — the brief the agent reads on every run — states
+the constraint explicitly. Every change passes through human review and a working preview URL
+before it can reach production.
 
 **Previews wait for the CDN.** `pr-preview-action` finishes as soon as it pushes to
 `gh-pages`, but GitHub Pages needs another 30–60s to actually serve it. Announcing the URL at
@@ -118,6 +118,5 @@ makes the notification truthful at every point.
 
 ## Scope
 
-The static page here is deliberately trivial — the interesting artifact is the pipeline, not
-the site. [`CLAUDE.md`](CLAUDE.md) constrains the agent to inline edits with no build step, so
-tickets should be scoped accordingly.
+The static page is a sandbox — deliberately trivial, so that the pipeline has something real to
+change. The artifact worth looking at is the automation, not the site.
