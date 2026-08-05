@@ -114,7 +114,7 @@ makes the notification truthful at every point.
 4. Create a fine-grained GitHub PAT scoped to this repository with `Issues: read and write`.
 5. In Jira, create an automation flow: trigger on transition to `AI assigned`, build the issue
    body in a variable, then `POST` it to `https://api.github.com/repos/<owner>/<repo>/issues`
-   with an `Authorization: Bearer <PAT>` header.
+   with an `Authorization: Bearer <PAT>` header, using the PAT created in step 4.
 
 ## Scope
 
