@@ -22,10 +22,13 @@ flowchart TD
     D --> E["🔀 Pull request opened<br/>agent does not merge"]
     E --> F["🌐 preview.yml<br/>deploys PR to its own URL"]
     F --> G["💬 Preview link posted<br/>back on the issue"]
-    G --> H{"👤 Human review"}
-    H -->|merge| I["🚀 deploy.yml<br/>publishes to production"]
-    H -->|"@claude change X"| D
+    G --> H{"👤 Human reviews<br/>the live preview"}
+    H -->|approve and merge| I["🚀 deploy.yml<br/>publishes to production"]
+    H -->|"request changes: comment<br/><code>@claude ...</code> on the PR"| D
 ```
+
+Requesting changes doesn't open anything new — the agent pushes another commit to the same
+branch, the preview URL updates in place, and the review starts again.
 
 Jira never talks to the AI directly. It only creates a GitHub issue — everything else is
 GitHub-native, which keeps the moving parts observable and debuggable.
@@ -66,25 +69,6 @@ production.
 that moment produces a link that 404s. Setting `wait-for-pages-deployment: true` and posting a
 `🚧 deploying…` comment that is later *edited* to `✅ deployed` — rather than posting twice —
 makes the notification truthful at every point.
-
-## Problems worth documenting
-
-**`401 Requires authentication` from the Jira web request.** Jira Automation's **Hidden**
-checkbox on a header value can blank the field internally while still rendering `····` in the
-UI. The token was valid; it simply wasn't being sent. Diagnosis relied on reading the status
-code as a signal: `401` means no valid credential arrived at all, whereas a scope or repository
-problem surfaces as `403`/`404`. That distinction pointed at the header rather than the token,
-which is where the actual bug was.
-
-**Smart values break JSON silently.** A Jira description containing quotes or newlines
-corrupts a hand-built JSON payload. The fix is `{{issue.summary.asJsonString}}` — but that
-function emits its *own* surrounding quotes, so wrapping it in quotes yourself produces
-doubled delimiters and a `400`. The multi-line body is assembled once into a variable, then
-serialized as a whole.
-
-**Workflows added after a PR exists don't retroactively run on it.** A workflow only executes
-for events that occur after it lands on the default branch. Validating a new workflow against
-an already-open PR requires a fresh `synchronize` event — a new commit — not a re-run.
 
 ## Setup
 
