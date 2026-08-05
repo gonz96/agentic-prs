@@ -50,16 +50,13 @@ preview, publishing to production — runs without anyone involved.
 ## How it works under the hood
 
 ```mermaid
-flowchart TD
-    A["🗂️ Jira ticket moved to<br/><b>AI assigned</b>"] --> B["⚙️ Jira Automation<br/>POST /repos/:owner/:repo/issues"]
-    B --> C["📋 GitHub issue created<br/>body contains <code>@claude</code>"]
-    C --> D["🤖 claude.yml<br/>anthropics/claude-code-action"]
-    D --> E["🔀 Pull request opened<br/>agent does not merge"]
-    E --> F["🌐 preview.yml<br/>deploys PR to its own URL"]
-    F --> G["💬 Preview link posted<br/>back on the issue"]
-    G --> H{"👤 Human reviews<br/>the live preview"}
-    H -->|approve and merge| I["🚀 deploy.yml<br/>publishes to production"]
-    H -->|"request changes: comment<br/><code>@claude ...</code> on the PR"| D
+flowchart LR
+    A["🗂️ Ticket →<br/><b>AI assigned</b>"] --> B["⚙️ Jira Automation<br/>POSTs an issue<br/>containing <code>@claude</code>"]
+    B --> C["🤖 <code>claude.yml</code><br/>agent opens a PR<br/>but never merges"]
+    C --> D["🌐 <code>preview.yml</code><br/>preview URL +<br/>link on the issue"]
+    D --> E{"👤 Review"}
+    E -->|"<code>@claude change...</code>"| C
+    E -->|approve| F["🚀 <code>deploy.yml</code><br/>→ production"]
 ```
 
 Requesting changes doesn't open anything new — the agent pushes another commit to the same
