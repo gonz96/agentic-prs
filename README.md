@@ -12,7 +12,47 @@ preview of that PR to its own URL. A human reviews and merges; production update
 This repository is the working end of that pipeline: the GitHub Actions workflows, plus a small
 static page that serves as the codebase the agent operates on.
 
-## How it works
+## Who does what
+
+Two people are involved, and neither of them leaves the tool they already work in. The Product
+Owner never opens GitHub; the developer never opens Jira. Everything between the two is
+automated.
+
+```mermaid
+flowchart TD
+    subgraph PO["👔 Product Owner — stays in Jira"]
+        A["Writes the ticket:<br/>summary, description,<br/>acceptance criteria"]
+        B["Drags the card into<br/><b>AI assigned</b>"]
+    end
+
+    subgraph AUTO["🤖 Automated — nobody does anything"]
+        C["A GitHub issue appears<br/>carrying the ticket's content"]
+        D["The agent writes the code<br/>and opens a pull request"]
+        E["A preview of that PR<br/>goes live on its own URL"]
+    end
+
+    subgraph DEV["👩‍💻 Developer — stays in GitHub"]
+        F["Opens the issue and clicks<br/>the preview link posted there"]
+        G["Tries the change running for real,<br/>then reads the diff"]
+        H{"Is it right?"}
+        I["Comments <code>@claude ...</code><br/>saying what to change"]
+        J["Approves and merges"]
+    end
+
+    K["🚀 Live in production"]
+
+    A --> B --> C --> D --> E --> F --> G --> H
+    H -->|"not yet"| I
+    I --> D
+    H -->|"yes"| J --> K
+```
+
+The Product Owner's only job is writing a ticket clear enough to act on and moving it one
+column. The developer's only job is judging the result — with the change already running at a
+URL, so review isn't reading code and imagining the outcome. Nothing in between requires a
+person, and the loop back to the agent is a plain comment rather than a handoff.
+
+## How it works under the hood
 
 ```mermaid
 flowchart TD
