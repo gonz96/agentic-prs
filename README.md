@@ -44,6 +44,12 @@ GitHub.
 **👤 Manual — the developer** opens the preview URL, sees the change already running, and
 either approves it or replies `@claude change...` to send it back. They never open Jira.
 
+> ⚠️ **Reply on the PR, not the issue.** The preview link gets posted on the originating
+> issue, which makes it tempting to keep the conversation there — but the agent only resumes
+> the existing branch when it's triggered from a comment **on the pull request itself** (or a
+> PR review). Commenting `@claude` on the issue instead starts a brand-new branch from
+> scratch, with no PR and no preview, leaving your original PR untouched.
+
 Everything else — reading the ticket, writing the code, opening the PR, deploying the
 preview, publishing to production — runs without anyone involved.
 
