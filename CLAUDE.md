@@ -18,6 +18,10 @@ pipeline something real to change; it is not a product. Treat it as a sandbox.
 
 ## Rules
 
+- **If this issue already has an open PR** (check with `gh pr list --search "linked:<issue-number>"`
+  or by looking for "Fixes #<issue-number>" in existing PR bodies), check out that PR's branch
+  and push your changes there. Do not start a fresh branch from `main` — that abandons the
+  existing PR and its preview instead of updating them.
 - Keep every change minimal and inline in `index.html`. Never add a build step, a package
   manager, or external dependencies.
 - Verify the HTML is well formed — matching tags, valid inline JS — before opening the PR.
