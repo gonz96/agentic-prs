@@ -131,10 +131,38 @@
       transform-box: fill-box;
     }
     .kibble.eaten { opacity: 0; transform: scale(0); }
+    #dragon-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    #dragon { width: 220px; height: auto; }
+    #dragon-fire {
+      opacity: 0;
+      transform-origin: 0% 50%;
+      transform-box: fill-box;
+    }
+    #dragon.fire #dragon-fire { animation: fire-breath .8s ease-out; }
+    #dragon.fire #dragon-head {
+      animation: dragon-recoil .8s ease-out;
+      transform-origin: center;
+      transform-box: fill-box;
+    }
+    @keyframes fire-breath {
+      0%   { opacity: 0; transform: scale(.2); }
+      15%  { opacity: 1; transform: scale(.7); }
+      40%  { opacity: 1; transform: scale(1) translateX(2px); }
+      65%  { opacity: 1; transform: scale(1.05) translateX(-2px); }
+      85%  { opacity: .7; transform: scale(.9); }
+      100% { opacity: 0; transform: scale(.3); }
+    }
+    @keyframes dragon-recoil {
+      0%, 100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      55%      { transform: translateX(2px); }
+    }
     @media (prefers-reduced-motion: reduce) {
       #dog.jump { animation: none; }
       #cat.eating #cat-head { animation: none; }
       .kibble { transition: none; }
+      #dragon.fire #dragon-fire { animation: none; }
+      #dragon.fire #dragon-head { animation: none; }
     }
   </style>
 </head>
@@ -219,6 +247,33 @@
       </ul>
     </section>
 
+    <section>
+      <h2>Dragon</h2>
+      <div id="dragon-wrap">
+        <svg id="dragon" viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" aria-label="Dragon">
+          <ellipse cx="110" cy="182" rx="85" ry="8" fill="#00000022"/>
+          <path d="M45 140 Q10 125 15 100 Q42 108 55 135 Z" fill="#356b40"/>
+          <rect x="72" y="138" width="14" height="30" rx="6" fill="#356b40"/>
+          <rect x="140" y="138" width="14" height="30" rx="6" fill="#356b40"/>
+          <path d="M75 95 Q45 45 95 60 Q102 80 92 100 Z" fill="#356b40"/>
+          <ellipse cx="115" cy="118" rx="62" ry="38" fill="#4f9a5c"/>
+          <g id="dragon-head">
+            <path d="M108 62 Q102 38 118 48 Q117 60 112 68 Z" fill="#356b40"/>
+            <path d="M136 60 Q145 35 156 46 Q150 60 143 66 Z" fill="#356b40"/>
+            <ellipse cx="168" cy="88" rx="42" ry="30" fill="#4f9a5c"/>
+            <circle cx="180" cy="78" r="5" fill="#1f1e1d"/>
+            <circle cx="194" cy="92" r="3" fill="#2b2b2b"/>
+            <path d="M160 102 Q188 98 202 108 Q188 118 160 114 Z" fill="#2b2b2b"/>
+          </g>
+          <g id="dragon-fire">
+            <path d="M198 106 Q224 96 240 102 Q222 108 214 110 Q232 112 242 120 Q220 120 206 118 Q222 128 228 136 Q206 130 196 118 Z" fill="#f6b93b"/>
+            <path d="M200 105 Q218 100 230 105 Q216 108 210 110 Q222 112 228 118 Q210 116 202 114 Q214 122 218 128 Q202 122 196 113 Z" fill="#e6572f"/>
+          </g>
+        </svg>
+        <button id="fire-btn">FIRE</button>
+      </div>
+    </section>
+
     <footer>
       No build step, no dependencies — everything lives in a single file.<br>
       <a href="https://github.com/gonz96/agentic-prs">See how it works</a>
@@ -261,6 +316,16 @@
     });
     catHead.addEventListener('animationend', function () {
       cat.classList.remove('eating');
+    });
+
+    var dragon = document.getElementById('dragon');
+    document.getElementById('fire-btn').addEventListener('click', function () {
+      dragon.classList.remove('fire');
+      void dragon.offsetWidth; // restart the animation on repeated clicks
+      dragon.classList.add('fire');
+    });
+    dragon.addEventListener('animationend', function () {
+      dragon.classList.remove('fire');
     });
   </script>
 </body>
