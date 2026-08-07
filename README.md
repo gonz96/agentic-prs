@@ -57,7 +57,7 @@ preview, publishing to production — runs without anyone involved.
 
 ```mermaid
 flowchart TD
-    A["🗂️ Jira ticket moved to<br/><b>AI assigned</b>"] --> B["⚙️ Jira Automation<br/>POST /repos/:owner/:repo/issues"]
+    A["🗂️ Jira ticket moved to<br/><b> AI assigned column</b>"] --> B["⚙️ Jira Automation<br/>POST /repos/:owner/:repo/issues"]
     B --> C["📋 GitHub issue created<br/>body contains <code>@claude</code>"]
     C --> D["🤖 claude.yml<br/>anthropics/claude-code-action"]
     D --> E["🔀 Pull request opened<br/>agent does not merge"]
