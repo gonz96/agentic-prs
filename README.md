@@ -19,7 +19,7 @@ Only two steps are manual, marked 👤 below. Everything else happens on its own
 ```mermaid
 flowchart LR
     subgraph JIRA["📋 JIRA"]
-        A["👤 🗂️ Move ticket to<br/><b>AI assigned</b>"]
+        A["👤 🗂️ Move ticket to<br/><b> AI assigned column</b>"]
     end
 
     subgraph GH["🐙 GITHUB"]
