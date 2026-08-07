@@ -60,11 +60,11 @@ flowchart TD
     A["🗂️ Jira ticket moved to<br/><b> AI assigned column</b>"] --> B["⚙️ Jira Automation<br/>POST /repos/:owner/:repo/issues"]
     B --> C["📋 GitHub issue created<br/>body contains <code>@claude</code>"]
     C --> D["🤖 claude.yml<br/>anthropics/claude-code-action"]
-    D --> E["🔀 Pull request opened<br/>agent does not merge"]
-    E --> F["🌐 preview.yml<br/>deploys PR to its own URL"]
-    F --> G["💬 Preview link posted<br/>back on the issue"]
-    G --> H{"👤 Human reviews<br/>the live preview"}
-    H -->|approve and merge| I["🚀 deploy.yml<br/>publishes to production"]
+    D --> E["🔀 Pull request opened<br/> agent does not merge"]
+    E --> F["🌐 preview.yml<br/> deploys PR to its own URL"]
+    F --> G["💬 Preview link posted<br/> back on the issue"]
+    G --> H{"👤 Human reviews<br/> the live preview"}
+    H -->|approve and merge| I["🚀 deploy.yml<br/> publishes to production"]
     H -->|"request changes: comment<br/><code>@claude ...</code> on the PR"| D
 ```
 
